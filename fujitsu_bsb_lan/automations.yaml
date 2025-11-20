@@ -1,0 +1,66 @@
+- id: fujitsu_kyte_off
+  alias: Põranaküte, radikad ja soe vesi välja
+  description: 'soojuspumba küte välja'
+  triggers:
+    - trigger: state
+      entity_id: binary_sensor.kallis_hind
+      from: 'off'
+      to: 'on'
+  condition: []
+  action:
+    - data_template:
+        parameter: 5710
+        value: 0
+      service: rest_command.bsb_lan_set_parameter
+    - data_template:
+        parameter: 5715
+        value: 0
+      service: rest_command.bsb_lan_set_parameter
+    - data_template:
+        parameter: 1600
+        value: 0
+      service: rest_command.bsb_lan_set_parameter
+- id: fujitsu_kyte_on
+  alias: Põranaküte, radikad ja soe vesi sisse
+  description: 'soojuspumba küte sisse'
+  triggers:
+    - trigger: state
+      entity_id: binary_sensor.kallis_hind
+      from: 'on'
+      to: 'off'
+  condition: []
+  action:
+    - data_template:
+        parameter: 5710
+        value: 1
+      service: rest_command.bsb_lan_set_parameter
+    - data_template:
+        parameter: 5715
+        value: 1
+      service: rest_command.bsb_lan_set_parameter
+    - data_template:
+        parameter: 1600
+        value: 1
+      service: rest_command.bsb_lan_set_parameter
+- id: radikad_soojemaks_magamise_ajaks
+  description: 'magamistoad enne magamist soojemaks'
+  triggers:
+    - trigger: time
+      at: '19:00'
+  conditions: "{{ states('sensor.fujitsu_valistemperatuur')|float < 14 }}"
+  action:
+    - data_template:
+        parameter: 1010
+        value: 22
+      service: rest_command.bsb_lan_set_parameter
+- id: radikad_tavarezhiimi_tagasi
+  description: 'magamistoad tavarezhimi tagasi'
+  triggers:
+    - trigger: time
+      at: '23:00'
+  condition: []
+  action:
+    - data_template:
+        parameter: 1010
+        value: 19
+      service: rest_command.bsb_lan_set_parameter

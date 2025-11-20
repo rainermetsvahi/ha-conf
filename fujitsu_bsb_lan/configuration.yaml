@@ -1,0 +1,228 @@
+
+# Loads default set of integrations. Do not remove.
+default_config:
+
+# Load frontend themes from the themes folder
+frontend:
+  themes: !include_dir_merge_named themes
+
+rest_command:
+  bsb_lan_set_parameter:
+    url: "http://bsb_lan_url/JS"
+    method: POST
+    username: !secret bsb_lan_user
+    password: !secret bsb_lan_pass
+    # Parameter "type": 1 = SET (default), 0 = INF
+    payload: '{"Parameter": "{{ parameter }}", "Value": "{{ value }}", "Type": "{% if type is defined %}{{ type }}{% else %}1{% endif %}"}'
+    content_type: "application/json; charset=utf-8"
+
+sensor:
+  - platform: rest
+    name: "Fujitsu välistemperatuur"
+    resource: "http://bsb_lan_url/JQ=8700"
+    username: !secret bsb_lan_user
+    password: !secret bsb_lan_pass
+    value_template: "{{ value_json['8700'].value | float }}"
+    unit_of_measurement: "°C"
+    device_class: "temperature"
+    scan_interval: 900   # 15 min
+
+  - platform: rest
+    name: "Fujitsu põrandakütte pealevool"
+    resource: "http://bsb_lan_url/JQ=8743"
+    username: !secret bsb_lan_user
+    password: !secret bsb_lan_pass
+    value_template: "{{ value_json['8743'].value | float }}"
+    unit_of_measurement: "°C"
+    device_class: "temperature"
+    scan_interval: 300   # 5 min
+
+  - platform: rest
+    name: "Fujitsu soe vesi"
+    resource: "http://bsb_lan_url/JQ=7806"
+    username: !secret bsb_lan_user
+    password: !secret bsb_lan_pass
+    value_template: "{{ value_json['7806'].value | float }}"
+    unit_of_measurement: "°C"
+    device_class: "water"
+    scan_interval: 600   # 10 min
+
+  - platform: rest
+    name: "Fujitsu soojuspumba pealevool"
+    resource: "http://bsb_lan_url/JQ=8412"
+    username: !secret bsb_lan_user
+    password: !secret bsb_lan_pass
+    value_template: "{{ value_json['8412'].value | float }}"
+    unit_of_measurement: "°C"
+    device_class: "temperature"
+    scan_interval: 300   #  5 min
+
+  - platform: rest
+    name: "Põrandaküe seade"
+    resource: "http://bsb_lan_url/JQ=710"
+    username: !secret bsb_lan_user
+    password: !secret bsb_lan_pass
+    value_template: "{{ value_json['710'].value | float }}"
+    unit_of_measurement: "°C"
+    device_class: "temperature"
+    scan_interval: 600   # 10 min
+
+  - platform: rest
+    name: "Radikate seade"
+    resource: "http://bsb_lan_url/JQ=1010"
+    username: !secret bsb_lan_user
+    password: !secret bsb_lan_pass
+    value_template: "{{ value_json['1010'].value | float }}"
+    unit_of_measurement: "°C"
+    device_class: "temperature"
+    scan_interval: 600   # 10 min
+
+  - platform: rest
+    name: "Fujitsu soojuspumba tagasivool"
+    resource: "http://bsb_lan_url/JQ=8410"
+    username: !secret bsb_lan_user
+    password: !secret bsb_lan_pass
+    value_template: "{{ value_json['8410'].value | float }}"
+    unit_of_measurement: "°C"
+    device_class: "temperature"
+    scan_interval: 300   # 5 min
+
+  - platform: rest
+    name: "soojuspumba kogutarbimine"
+    resource: "http://bsb_lan_url/JQ=3113"
+    username: !secret bsb_lan_user
+    password: !secret bsb_lan_pass
+    value_template: "{{ value_json['3113'].value.split(' ')[0] | int }}"
+    unit_of_measurement: "kWh"
+    device_class: "power"
+    scan_interval: 3600  # 1 h
+
+  - platform: rest
+    name: "soojuspumba N-1 tarbimine küte"
+    resource: "http://bsb_lan_url/JQ=3124"
+    username: !secret bsb_lan_user
+    password: !secret bsb_lan_pass
+    value_template: "{{ value_json['3124'].value.split(' ')[0] | int }}"
+    unit_of_measurement: "kWh"
+    device_class: "energy"
+    scan_interval: 3600  # 1 h
+
+  - platform: rest
+    name: "soojuspumba N-1 tarbimine soe vesi"
+    resource: "http://bsb_lan_url/JQ=3125"
+    username: !secret bsb_lan_user
+    password: !secret bsb_lan_pass
+    value_template: "{{ value_json['3125'].value.split(' ')[0] | int }}"
+    unit_of_measurement: "kWh"
+    device_class: "water"
+    scan_interval: 3600  # 1 h
+
+binary_sensor:
+  - platform: rest
+    name: "Soojuspumba boiler sisselülitatud"
+    resource: "http://bsb_lan_url/JQ=1600"
+    username: !secret bsb_lan_user
+    password: !secret bsb_lan_pass
+    value_template: "{{ value_json['1600'].value == '1' }}"
+    device_class: "running"
+    scan_interval: 600   # 10 min
+
+  - platform: rest
+    name: "Soojuspumba põrandaküte"
+    resource: "http://bsb_lan_url/JQ=5710"
+    username: !secret bsb_lan_user
+    password: !secret bsb_lan_pass
+    value_template: "{{ value_json['5710'].value == '1' }}"
+    device_class: "running"
+    scan_interval: 600   # 10 min
+
+  - platform: rest
+    name: "Soojuspumba radiaatorküte"
+    resource: "http://bsb_lan_url/JQ=5715"
+    username: !secret bsb_lan_user
+    password: !secret bsb_lan_pass
+    value_template: "{{ value_json['5715'].value == '1' }}"
+    device_class: "running"
+    scan_interval: 600   # 10 min
+
+input_number:
+  kallimate_tundide_arv:
+    name: "Kallimate tundide arv"
+    min: 4
+    max: 24
+    step: 1
+    mode: slider
+    icon: mdi:clock-outline
+
+  kalleim_lubatud_hind:
+    name: "Max lubatud kWh hind"
+    min: 200
+    max: 2000
+    step: 100
+    mode: slider
+    icon: mdi:cash
+
+  kalleim_hinnapiirita_hind:
+    name: "Max odav kWh hind, millele hinnapiir ei rakendu"
+    min: 10
+    max: 200
+    step: 10
+    mode: slider
+    icon: mdi:cash
+
+automation: !include automations.yaml
+script: !include scripts.yaml
+#scene: !include scenes.yaml
+
+template:
+
+  - sensor:
+      - name: hinnapiir
+        unique_id: hinnapiir
+        device_class: "monetary"
+        state: >-
+          {% set num_expensive_hours = states('input_number.kallimate_tundide_arv')|int %}
+          {% set max_allowed_price = states('input_number.kalleim_lubatud_hind')|float %}
+
+          {% set sorted_prices = state_attr('sensor.nordpool_mwh_ee_eur_3_10_022', 'raw_today')|sort(attribute='value') %}
+
+          {% set threshold_index = sorted_prices|length - num_expensive_hours %}
+          {% set max_hourly_price = sorted_prices[threshold_index - 1].value %}
+          
+          {% if max_hourly_price < max_allowed_price %}
+            {{ max_hourly_price }}
+          {% else %}
+            {{ max_allowed_price}}
+          {% endif %}
+
+  - binary_sensor:
+      - name: kallis_hind
+        unique_id: kallis_hind
+        state: >-
+          {% set max_allowed_price = states('sensor.hinnapiir')|float  %}
+          {% set max_ignore_market_price = states('input_number.kalleim_hinnapiirita_hind')|float  %}
+
+          {% set prices = state_attr('sensor.nordpool_mwh_ee_eur_3_10_022', 'raw_today') %}
+          {% set current_hour = now().hour %}
+
+          {% for item in prices %}
+            {% if item.start.hour == current_hour %}
+              {{ item.value > max_ignore_market_price and item.value > max_allowed_price }}
+            {% endif %}
+          {% endfor %}
+
+  - trigger:
+      - trigger: time_pattern
+        hours: /1
+    action:
+      - action: weather.get_forecasts
+        data:
+          type: hourly
+        target:
+          entity_id: weather.home
+        response_variable: hourly
+    sensor:
+      - name: Temperature forecast next hour
+        unique_id: temperature_forecast_next_hour
+        state: "{{ hourly['weather.home'].forecast[0].temperature }}"
+        unit_of_measurement: °C
