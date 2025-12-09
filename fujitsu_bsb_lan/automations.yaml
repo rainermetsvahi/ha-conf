@@ -57,7 +57,7 @@
   description: 'magamistoad tavarezhimi tagasi'
   triggers:
     - trigger: time
-      at: '23:00'
+      at: '22:00'
   condition: []
   action:
     - data_template:
