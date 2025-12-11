@@ -46,7 +46,7 @@
   description: 'magamistoad enne magamist soojemaks'
   triggers:
     - trigger: time
-      at: '19:00'
+      at: '20:00'
   conditions: "{{ states('sensor.fujitsu_valistemperatuur')|float < 14 }}"
   action:
     - data_template:
