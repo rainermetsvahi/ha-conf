@@ -49,9 +49,15 @@
       at: '20:00'
   conditions: "{{ states('sensor.fujitsu_valistemperatuur')|float < 14 }}"
   action:
+    # radikad soojemaks
     - data_template:
         parameter: 1010
-        value: 22
+        value: 21
+      service: rest_command.bsb_lan_set_parameter
+    # sooja tarbevee tegemine väljai, et ainult radikaid soojendaks
+    - data_template:
+        parameter: 1600
+        value: 0
       service: rest_command.bsb_lan_set_parameter
 - id: radikad_tavarezhiimi_tagasi
   description: 'magamistoad tavarezhimi tagasi'
@@ -63,4 +69,9 @@
     - data_template:
         parameter: 1010
         value: 19
+      service: rest_command.bsb_lan_set_parameter
+    # sooja tarbevee küte sisse tagasi
+    - data_template:
+        parameter: 1600
+        value: 1
       service: rest_command.bsb_lan_set_parameter
