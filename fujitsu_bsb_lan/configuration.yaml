@@ -58,7 +58,7 @@ sensor:
     scan_interval: 300   #  5 min
 
   - platform: rest
-    name: "Põrandaküe seade"
+    name: "Põrandakütte seade"
     resource: "http://bsb_lan_url/JQ=710"
     username: !secret bsb_lan_user
     password: !secret bsb_lan_pass
