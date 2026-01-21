@@ -97,26 +97,6 @@ sensor:
     device_class: "power"
     scan_interval: 3600  # 1 h
 
-  - platform: rest
-    name: "soojuspumba N-1 tarbimine küte"
-    resource: "http://bsb_lan_url/JQ=3124"
-    username: !secret bsb_lan_user
-    password: !secret bsb_lan_pass
-    value_template: "{{ value_json['3124'].value.split(' ')[0] | int }}"
-    unit_of_measurement: "kWh"
-    device_class: "energy"
-    scan_interval: 3600  # 1 h
-
-  - platform: rest
-    name: "soojuspumba N-1 tarbimine soe vesi"
-    resource: "http://bsb_lan_url/JQ=3125"
-    username: !secret bsb_lan_user
-    password: !secret bsb_lan_pass
-    value_template: "{{ value_json['3125'].value.split(' ')[0] | int }}"
-    unit_of_measurement: "kWh"
-    device_class: "water"
-    scan_interval: 3600  # 1 h
-
 binary_sensor:
   - platform: rest
     name: "Soojuspumba boiler sisselülitatud"
