@@ -52,9 +52,9 @@
     # radikad soojemaks
     - data_template:
         parameter: 1010
-        value: 21
+        value: 20
       service: rest_command.bsb_lan_set_parameter
-    # sooja tarbevee tegemine väljai, et ainult radikaid soojendaks
+    # sooja tarbevee tegemine välja, et ainult radikaid soojendaks
     - data_template:
         parameter: 1600
         value: 0
